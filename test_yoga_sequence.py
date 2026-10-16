@@ -1,7 +1,10 @@
 import io
+import subprocess
+import sys
 import types
 import unittest
 from contextlib import redirect_stdout
+from pathlib import Path
 
 from yoga_sequence import build_sequence, main, parse_focus
 
@@ -82,6 +85,19 @@ class MainTests(unittest.TestCase):
         self.assertEqual(
             self.run_main([]),
             "Cat-Cow\nDownward Dog\nCobra\nSeated Forward Fold\nChild's Pose\n",
+        )
+
+    def test_command_line_entry_point(self):
+        script = Path(__file__).with_name("yoga_sequence.py")
+        result = subprocess.run(
+            [sys.executable, str(script), "hips", "core"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        self.assertEqual(
+            result.stdout,
+            "Cat-Cow\nDownward Dog\nWarrior II\nBoat Pose\nChild's Pose\n",
         )
 
 
